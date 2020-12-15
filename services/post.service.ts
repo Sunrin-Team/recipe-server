@@ -1,48 +1,68 @@
-import UserModel from '../models/user.model';
+import PostModel from '../models/post.model';
+import PostpartModel from '../models/postpart.model';
 
 export class PostService {
-    public createPost(email: string, password: string, nickname: string): Promise<void> {
+    public create(email: string, filename: string, title: string, subtitle: string): Promise<void> {
         return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
             try {
-                const result = await UserModel.create({email, password, nickname});
+                let result = await PostModel.create({writer: email, image: "http://recipeapp.saintdev.kr/"+filename, title, subTitle: subtitle});
+                resolve();
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+    public createPart(email: string, filename: string, description: string, partId: string, postId: string): Promise<void> {
+        return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
+            try {
+                let result = await PostpartModel.create({writer: email, image: "http://recipeapp.saintdev.kr/"+filename, text: description, partNumber: partId, postId});
+                resolve();
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+    public readAll(): Promise<void> {
+        return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
+            try {
+                let result = await PostModel.findAll();
                 resolve(result);
             } catch (err) {
                 reject(err);
             }
         });
     }
-
-    public readPost(username: string, password: string): Promise<void> {
-        return new Promise((resolve: Function, reject: Function): void => {
-
+    public readOne(postId: number): Promise<void> {
+        return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
+            try {
+                let post: any = await PostModel.findOne({where: {id: postId}});
+                let postparts = await PostpartModel.findAll({where: {postId}});
+                post.dataValues.actions = postparts;
+                console.log(post);
+                resolve(post);
+            } catch (err) {
+                reject(err);
+            }
         });
     }
-
-    public updatePost(username: string, password: string): Promise<void> {
-        return new Promise((resolve: Function, reject: Function): void => {
-
+    public remove(postId: number): Promise<void> {
+        return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
+            try {
+                let result = await PostModel.findOne({where: {id: postId}});
+                if (result !== null) {
+                    result.destroy();
+                    resolve();
+                } else {
+                    reject("존재하지 않는 포스트");
+                }
+            } catch (err) {
+                reject(err);
+            }
         });
     }
-
-    public deletePost(username: string, password: string): Promise<void> {
-        return new Promise((resolve: Function, reject: Function): void => {
+    public updatePart(email: string, filename: string, description: string, postId: number, partId: number): Promise<void> {
+        return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
 
         });
     }
 }
-
-/*
-            UserModel.findOne({username: crypto.encrypt(username)}, (err: object, res: UserModelT): void => {
-                if (err) {
-                    reject(err);
-                } else if (res == null) {
-                    new UserModel({username: crypto.encrypt(username), password: crypto.encrypt(password)}).save((err: object): void => {
-                        if (err)
-                            reject(err);
-                        else
-                            resolve();
-                    })
-                } else {
-                    reject("the user already exist.");
-                }
-            }); */

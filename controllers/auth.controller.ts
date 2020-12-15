@@ -12,18 +12,18 @@ export class AuthController extends Controller {
         super();
         this.router.post('/login', this.login);
         this.router.post('/register', this.register);
-        this.router.post('/unregister', this.unregister);
+        this.router.delete('/unregister', this.unregister);
     }
     
     
     public async login(req: Request, res: Response): Promise<void> {
-        let { username, password } = req.body;
+        let { email, password } = req.body;
         
         try {
-            await this.authService.login(username, password);
+            await new AuthService().login(email, password);
             
             super.ResponseSuccess(res, {token: JWT.encodeToken({
-                username: username
+                email
             })});
         } catch (err) {
             if (err == "유저를 찾을 수 없음") {
@@ -35,28 +35,28 @@ export class AuthController extends Controller {
     }
     
     public async register(req: Request, res: Response): Promise<void>{
-        let { username, password, nickname } = req.body;  
+        let { email, password, nickname } = req.body;  
         
         try {
-            await this.authService.register(username, password, nickname);
+            await new AuthService().register(email, password, nickname);
 
             super.ResponseSuccess(res, {token: JWT.encodeToken({
-                username: username
+                email
             })});
         } catch (err) {
             if (err == "이미 유저가 존재함") {
                 super.ResponseForbidden(res, {});
-            } else {
+            } else {    
                 super.ResponseInternalServerError(res, {err});
             }    
         }
     }
     
     public async unregister(req: Request, res: Response): Promise<void>{
-        let { username } = req.body;  
+        let { email } = req.body;  
         
         try {
-            await this.authService.unregister(username);
+            await new AuthService().unregister(email);
 
             super.ResponseSuccess(res, {});
         } catch (err) {

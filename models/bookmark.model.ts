@@ -4,38 +4,27 @@ import config from '../db-config';
 const env = process.env.NODE_ENV || 'development';
 const sequelize = new Sequelize(config[env].database, config[env].username, config[env].password, config[env]);
 
-class PostModel extends Model {}
+class BookmarkModel extends Model {}
 
-PostModel.init({
+BookmarkModel.init({
     id:{
         type: DataTypes.INTEGER(),
         allowNull: false,
-        unique: true,
+        autoIncrement: true,
+        primaryKey: true
     },
-    imageUrl:{
-        type: DataTypes.STRING(100),
-        allowNull: false,
-    },
-    title:{
-        type: DataTypes.STRING(100),
-        allowNull: false,
-    },
-    description:{
-        type: DataTypes.STRING(1000),
-        allowNull: false,
-    },
-    subtitle:{
-        type: DataTypes.STRING(100),
-        allowNull: false,
-    },
-    user:{
+    email:{
         type: DataTypes.STRING(40),
+        allowNull: false,
+    },
+    postId:{
+        type: DataTypes.INTEGER,
         allowNull: false,
     }
 }, {
     sequelize,
-    modelName: "post",
+    modelName: "bookmark",
     timestamps: false
 });
 
-export default PostModel
+export default BookmarkModel

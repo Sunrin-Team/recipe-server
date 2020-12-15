@@ -1,37 +1,41 @@
-import UserModel from '../models/user.model';
+import BookmarkModel from '../models/bookmark.model';
 
-export class AuthService {
-    public login(email: string, password: string): Promise<void> {
-        return new Promise((resolve: Function, reject: Function): void => {
-
+export class BookmarkService {
+    public create(email: string, postId: number): Promise<void> {
+        return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
+            try {
+                let result = await BookmarkModel.create({email, postId});
+                resolve();
+            } catch (err) {
+                reject(err);
+            }
         });
     }
-
-    public register(email: string, password: string, nickname: string): Promise<void> {
-        return new Promise((resolve: Function, reject: Function): void => {
-
+    
+    public remove(email: string, postId: number): Promise<void> {
+        return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
+            try {
+                let result = await BookmarkModel.findOne({where: {email, postId}});
+                if (result !== null) {
+                    result.destroy();
+                    resolve();
+                } else {
+                    reject("존재하지 않는 즐겨찾기");
+                }
+            } catch (err) {
+                reject(err);
+            }
         });
     }
-
-    public unregister(username: string): Promise<void> {
-        return new Promise((resolve: Function, reject: Function): void => {
-
+    
+    public readAll(email: string): Promise<void> {
+        return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
+            try {
+                let result = await BookmarkModel.findAll({where:{email}});
+                resolve(result);
+            } catch (err) {
+                reject(err);
+            }
         });
     }
 }
-
-/*
-            UserModel.findOne({username: crypto.encrypt(username)}, (err: object, res: UserModelT): void => {
-                if (err) {
-                    reject(err);
-                } else if (res == null) {
-                    new UserModel({username: crypto.encrypt(username), password: crypto.encrypt(password)}).save((err: object): void => {
-                        if (err)
-                            reject(err);
-                        else
-                            resolve();
-                    })
-                } else {
-                    reject("the user already exist.");
-                }
-            }); */

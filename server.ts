@@ -33,6 +33,8 @@ app.use('/api/bookmark', BookmarkRoute);
 app.set('views', './views');
 app.set('view engine', 'ejs');
 
+app.use('/static', express.static(config.fileDir.default));
+
 app.listen(config.port, (): void => {
     console.log(`Listening at http://localhost:${config.port}/`);
 });

@@ -1,70 +1,56 @@
 import { Router, Request, Response } from 'express';
 
-import { AuthService } from '../services/auth.service'
+import { BookmarkService } from '../services/bookmark.service'
 import { Controller } from './controller';
 import { JWT } from '../utils/jwt';
 
-export class AuthController extends Controller {
-    private authService: AuthService = new AuthService();
+export class BookmarkController extends Controller {
+    private bookmarkService: BookmarkService = new BookmarkService();
     protected router: Router = Router();
 
     public constructor () {
         super();
-        this.router.post('/login', this.login);
-        this.router.post('/register', this.register);
-        this.router.post('/unregister', this.unregister);
+        this.router.post('/create', this.create);
+        this.router.delete('/remove', this.remove);
+        this.router.get('/readAll', this.readAll);
     }
     
-    
-    public async login(req: Request, res: Response): Promise<void> {
-        let { username, password } = req.body;
-        
+    public async create(req: Request, res: Response): Promise<void> {
+        let { token, postId } = req.body;
+        let email = JWT.decodeToken(token).email;
+
         try {
-            await this.authService.login(username, password);
+            await new BookmarkService().create(email, postId);
             
-            super.ResponseSuccess(res, {token: JWT.encodeToken({
-                username: username
-            })});
-        } catch (err) {
-            if (err == "유저를 찾을 수 없음") {
-                super.ResponseNotFound(res, {});
-            } else {
-                super.ResponseInternalServerError(res, {err});
-            }
-        }
-    }
-    
-    public async register(req: Request, res: Response): Promise<void>{
-        let { username, password, nickname } = req.body;  
-        
-        try {
-            await this.authService.register(username, password, nickname);
-
-            super.ResponseSuccess(res, {token: JWT.encodeToken({
-                username: username
-            })});
-        } catch (err) {
-            if (err == "이미 유저가 존재함") {
-                super.ResponseForbidden(res, {});
-            } else {
-                super.ResponseInternalServerError(res, {err});
-            }    
-        }
-    }
-    
-    public async unregister(req: Request, res: Response): Promise<void>{
-        let { username } = req.body;  
-        
-        try {
-            await this.authService.unregister(username);
-
             super.ResponseSuccess(res, {});
         } catch (err) {
-            if (err == "유저를 찾을 수 없음") {
-                super.ResponseNotFound(res, {});
-            } else {
-                super.ResponseInternalServerError(res, {err});
-            }    
+            super.ResponseInternalServerError(res, {err});
+        }
+    }
+    
+    public async remove(req: Request, res: Response): Promise<void> {
+        let { token, postId } = req.body;
+        let email = JWT.decodeToken(token).email;
+        
+        try {
+            await new BookmarkService().remove(email, postId);
+            
+            super.ResponseSuccess(res, {});
+        } catch (err) {
+            super.ResponseInternalServerError(res, {err});
+        }
+    }
+    
+    public async readAll(req: Request, res: Response): Promise<void> {
+        let { token } = req.body;
+        let email = JWT.decodeToken(token).email;
+       
+        try {
+            let result = await new BookmarkService().readAll(email);
+            
+            super.ResponseSuccess(res, {result});
+        } catch (err) {
+            super.ResponseInternalServerError(res, {err});
         }
     }
 
@@ -74,4 +60,4 @@ export class AuthController extends Controller {
 }
 
 
-export default new AuthController().controllerRouter;
+export default new BookmarkController().controllerRouter;

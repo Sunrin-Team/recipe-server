@@ -4,38 +4,35 @@ import config from '../db-config';
 const env = process.env.NODE_ENV || 'development';
 const sequelize = new Sequelize(config[env].database, config[env].username, config[env].password, config[env]);
 
-class PostModel extends Model {}
+class PostPartModel extends Model {}
 
-PostModel.init({
+PostPartModel.init({
     id:{
         type: DataTypes.INTEGER(),
         allowNull: false,
-        unique: true,
+        autoIncrement: true,
+        primaryKey: true
     },
-    imageUrl:{
-        type: DataTypes.STRING(100),
-        allowNull: false,
-    },
-    title:{
-        type: DataTypes.STRING(100),
-        allowNull: false,
-    },
-    description:{
+    image:{
         type: DataTypes.STRING(1000),
         allowNull: false,
     },
-    subtitle:{
-        type: DataTypes.STRING(100),
+    text:{
+        type: DataTypes.STRING(1000),
         allowNull: false,
     },
-    user:{
-        type: DataTypes.STRING(40),
-        allowNull: false,
+    partNumber:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    postId:{
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 }, {
     sequelize,
-    modelName: "post",
+    modelName: "postpart",
     timestamps: false
 });
 
-export default PostModel
+export default PostPartModel

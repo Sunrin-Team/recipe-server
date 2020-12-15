@@ -5,7 +5,7 @@ export class JWT {
         return encode(data, "SECRET_KEY");
     }
 
-    public static decodeToken (token: string): string {
+    public static decodeToken (token: string): any {
         return decode(token, "SECRET_KEY");
     }
 }

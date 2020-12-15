@@ -9,26 +9,22 @@ class PostModel extends Model {}
 PostModel.init({
     id:{
         type: DataTypes.INTEGER(),
-        allowNull: false,
-        unique: true,
+        primaryKey: true,
+        autoIncrement: true
     },
-    imageUrl:{
-        type: DataTypes.STRING(100),
+    image:{
+        type: DataTypes.STRING(1000),
         allowNull: false,
     },
     title:{
         type: DataTypes.STRING(100),
         allowNull: false,
     },
-    description:{
-        type: DataTypes.STRING(1000),
-        allowNull: false,
-    },
-    subtitle:{
+    subTitle:{
         type: DataTypes.STRING(100),
         allowNull: false,
     },
-    user:{
+    writer:{
         type: DataTypes.STRING(40),
         allowNull: false,
     }
