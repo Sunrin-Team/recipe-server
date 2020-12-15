@@ -7,6 +7,11 @@ const sequelize = new Sequelize(config[env].database, config[env].username, conf
 class UserModel extends Model {}
 
 UserModel.init({
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     email:{
         type: DataTypes.STRING(40),
         allowNull: false,
@@ -15,14 +20,16 @@ UserModel.init({
     nickname:{
         type: DataTypes.STRING(15),
         allowNull: false,
+        unique: true
     },
     password:{
         type: DataTypes.STRING(100),
         allowNull: false,
-    },
+    }
 }, {
     sequelize,
-    modelName: "user"
+    modelName: "user",
+    timestamps: false
 });
 
 export default UserModel

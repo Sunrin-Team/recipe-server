@@ -9,6 +9,7 @@ import dbconfig from './db-config';
 import IndexRoute from './controllers/index.controller';
 import AuthRoute from './controllers/auth.controller';
 import PostRoute from './controllers/post.controller';
+import BookmarkRoute from './controllers/bookmark.controller';
 
 const app: express.Application = express();
 const env = process.env.NODE_ENV || 'development';
@@ -25,8 +26,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(config.staticDir));
 
 app.use('/', IndexRoute);
-app.use('/auth', AuthRoute);
-app.use('/post', PostRoute);
+app.use('/api/auth', AuthRoute);
+app.use('/api/post', PostRoute);
+app.use('/api/bookmark', BookmarkRoute);
 
 app.set('views', './views');
 app.set('view engine', 'ejs');

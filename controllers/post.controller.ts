@@ -13,16 +13,16 @@ export class PostController extends Controller {
     }
     
     public async create(req: Request, res: Response): Promise<void> {
-        let { username, password } = req.body;
+        let { email, password, nickname } = req.body;
         
         try {
-            await this.postService.createPost(username, password);
-            
+            await new PostService().createPost(email, password, nickname);
             super.ResponseSuccess(res, {});
         } catch (err) {
             if (err == "유저가 이미 존재함") {
                 super.ResponseForbidden(res, {});
             } else {
+                console.log(err, "err")
                 super.ResponseInternalServerError(res, {err});
             }
         }
