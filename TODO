@@ -1,0 +1,18 @@
+게시글 post
+ 게시글 넘버 id
+ 대표사진 imageUrl
+ 제목 title
+ 설명글 description
+
+CRUD
+
+유저 user
+ 이메일 email
+ 비밀번호 password
+ 이름 nickname
+
+CRUD
+
+ 이미지 호스팅
+
+ 프론트엔드는 뷰
