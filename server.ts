@@ -6,7 +6,6 @@ import { Sequelize } from 'sequelize';
 import config from './server-config';
 import dbconfig from './db-config';
 
-import IndexRoute from './controllers/index.controller';
 import AuthRoute from './controllers/auth.controller';
 import PostRoute from './controllers/post.controller';
 import BookmarkRoute from './controllers/bookmark.controller';
@@ -25,15 +24,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(config.staticDir));
 
-app.use('/', IndexRoute);
 app.use('/api/auth', AuthRoute);
 app.use('/api/post', PostRoute);
 app.use('/api/bookmark', BookmarkRoute);
 
-app.set('views', './views');
-app.set('view engine', 'ejs');
-
 app.use('/static', express.static(config.fileDir.default));
+app.use('/', express.static(config.viewsDir));
 
 app.listen(config.port, (): void => {
     console.log(`Listening at http://localhost:${config.port}/`);

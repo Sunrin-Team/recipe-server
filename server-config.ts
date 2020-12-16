@@ -7,5 +7,6 @@ export default {
     fileDir: {
         default: 'files/'
     },
-    staticDir: './static'
+    staticDir: './static',
+    viewsDir: './views'
 }

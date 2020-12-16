@@ -1,11 +1,12 @@
 import PostModel from '../models/post.model';
 import PostpartModel from '../models/postpart.model';
+import BookmarkModel from '../models/bookmark.model';
 
 export class PostService {
     public create(email: string, filename: string, title: string, subtitle: string): Promise<void> {
         return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
             try {
-                let result = await PostModel.create({writer: email, image: "http://recipeapp.saintdev.kr/"+filename, title, subTitle: subtitle});
+                let result = await PostModel.create({writer: email, image: "http://recipeapp.saintdev.kr/static/"+filename, title, subTitle: subtitle});
                 resolve();
             } catch (err) {
                 reject(err);
@@ -15,7 +16,7 @@ export class PostService {
     public createPart(email: string, filename: string, description: string, partId: string, postId: string): Promise<void> {
         return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
             try {
-                let result = await PostpartModel.create({writer: email, image: "http://recipeapp.saintdev.kr/"+filename, text: description, partNumber: partId, postId});
+                let result = await PostpartModel.create({writer: email, image: "http://recipeapp.saintdev.kr/static/"+filename, text: description, partNumber: partId, postId});
                 resolve();
             } catch (err) {
                 reject(err);
@@ -32,24 +33,35 @@ export class PostService {
             }
         });
     }
-    public readOne(postId: number): Promise<void> {
+    public readOne(email: string, postId: string): Promise<void> {
         return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
             try {
                 let post: any = await PostModel.findOne({where: {id: postId}});
                 let postparts = await PostpartModel.findAll({where: {postId}});
+                let bookmark = await BookmarkModel.findOne({where: {postId, email}});
+
+                if (bookmark !== null)
+                    post.dataValues.isBookmark = true;
+                else
+                    post.dataValues.isBookmark = false;
+
+                if (email == post.writer)
+                    post.dataValues.isWriter = true;
+                else
+                    post.dataValues.isWriter = false;
+
                 post.dataValues.actions = postparts;
-                console.log(post);
                 resolve(post);
             } catch (err) {
                 reject(err);
             }
         });
     }
-    public remove(postId: number): Promise<void> {
+    public remove(postId: string): Promise<void> {
         return new Promise(async (resolve: Function, reject: Function): Promise<void> => {
             try {
                 let result = await PostModel.findOne({where: {id: postId}});
-                if (result !== null) {
+                if (result != null) {
                     result.destroy();
                     resolve();
                 } else {

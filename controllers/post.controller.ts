@@ -16,7 +16,7 @@ export class PostController extends Controller {
         this.router.post('/create', imageUpload.single('image'), this.create);
         this.router.post('/createPart', imageUpload.single('image'), this.createPart);
         this.router.get('/readAll', this.readAll);
-        this.router.get('/readOne', this.readOne);
+        this.router.post('/readOne', this.readOne);
         this.router.delete('/remove', this.remove);
         this.router.put('/updatePart', imageUpload.single('image'), this.updatePart);
     }
@@ -74,12 +74,18 @@ export class PostController extends Controller {
     }
     
     public async readOne(req: Request, res: Response): Promise<void> {
-        let { postId } = req.body;
-        
+        let { token, postId } = req.body;
+        let email;
+
+        if (token != undefined)
+            email = JWT.decodeToken(token).email;
+        else
+            email = "##"
+
         try {
-            let result = await new PostService().readOne(postId);
+            let result = await new PostService().readOne(email, postId);
             
-            super.ResponseSuccess(res, {result});
+            super.ResponseSuccess(res, {recipe: result});
         } catch (err) {
             super.ResponseInternalServerError(res, {err});
         }
@@ -87,7 +93,6 @@ export class PostController extends Controller {
     
     public async remove(req: Request, res: Response): Promise<void> {
         let { postId } = req.body;
-        
         try {
             await new PostService().remove(postId);
             

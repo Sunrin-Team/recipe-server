@@ -11,15 +11,15 @@ export class BookmarkController extends Controller {
     public constructor () {
         super();
         this.router.post('/create', this.create);
-        this.router.delete('/remove', this.remove);
-        this.router.get('/readAll', this.readAll);
+        this.router.post('/remove', this.remove);
+        this.router.post('/readAll', this.readAll);
     }
     
     public async create(req: Request, res: Response): Promise<void> {
         let { token, postId } = req.body;
-        let email = JWT.decodeToken(token).email;
 
         try {
+            let email = JWT.decodeToken(token).email;
             await new BookmarkService().create(email, postId);
             
             super.ResponseSuccess(res, {});
@@ -30,9 +30,9 @@ export class BookmarkController extends Controller {
     
     public async remove(req: Request, res: Response): Promise<void> {
         let { token, postId } = req.body;
-        let email = JWT.decodeToken(token).email;
         
         try {
+            let email = JWT.decodeToken(token).email;
             await new BookmarkService().remove(email, postId);
             
             super.ResponseSuccess(res, {});
@@ -43,9 +43,9 @@ export class BookmarkController extends Controller {
     
     public async readAll(req: Request, res: Response): Promise<void> {
         let { token } = req.body;
-        let email = JWT.decodeToken(token).email;
-       
+        
         try {
+            let email = JWT.decodeToken(token).email;
             let result = await new BookmarkService().readAll(email);
             
             super.ResponseSuccess(res, {result});
