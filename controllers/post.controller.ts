@@ -19,10 +19,11 @@ export class PostController extends Controller {
         this.router.post('/readOne', this.readOne);
         this.router.delete('/remove', this.remove);
         this.router.put('/updatePart', imageUpload.single('image'), this.updatePart);
+        this.router.put('/updatePost', imageUpload.single('image'), this.updatePost);
     }
     
     public async create(req: Request, res: Response): Promise<void> {
-        let { token, title, subtitle } = req.body;
+        let { token, title, subTitle } = req.body;
         let email = JWT.decodeToken(token).email;
         
         let file = (req as any).file;
@@ -34,17 +35,15 @@ export class PostController extends Controller {
         let { filename } = file;
 
         try {
-            await new PostService().create(email, filename, title, subtitle);
-            
-            super.ResponseSuccess(res, {});
+            let result = await new PostService().create(email, filename, title, subTitle);
+            super.ResponseSuccess(res, {postId: result});
         } catch (err) {
             super.ResponseInternalServerError(res, {err});
         }
     }
     
     public async createPart(req: Request, res: Response): Promise<void> {
-        let { token, description, partId, postId } = req.body;
-        let email = JWT.decodeToken(token).email;
+        let { description, partId, postId } = req.body;
         
         let file = (req as any).file;
         if (!file) {
@@ -55,7 +54,7 @@ export class PostController extends Controller {
         let { filename } = file;
 
         try {
-            await new PostService().createPart(email, filename, description, partId, postId);
+            await new PostService().createPart("", filename, description, partId, postId);
             
             super.ResponseSuccess(res, {});
         } catch (err) {
@@ -103,19 +102,34 @@ export class PostController extends Controller {
     }
     
     public async updatePart(req: Request, res: Response): Promise<void> {
-        let { token, postId, partId, description } = req.body;
-        let email = JWT.decodeToken(token).email;
-        
+        let { postId, partId, description } = req.body;
+
         let file = (req as any).file;
-        if (!file) {
-            super.ResponseBadRequest(res, { err: "file not found" });
-            return;
-        }
+        if (!file)
+            file = null;
 
         let { filename } = file;
 
         try {
-            await new PostService().updatePart(email, filename, description, postId, partId);
+            await new PostService().updatePart(filename, description, postId, partId);
+            
+            super.ResponseSuccess(res, {});
+        } catch (err) {
+            super.ResponseInternalServerError(res, {err});
+        }
+    }
+    
+    public async updatePost(req: Request, res: Response): Promise<void> {
+        let { postId, title, subTitle } = req.body;
+        console.log(postId,"asdf");
+        let file = (req as any).file;
+        if (!file)
+            file = null;
+
+        let { filename } = file;
+
+        try {
+            await new PostService().updatePost(filename, title, subTitle, postId);
             
             super.ResponseSuccess(res, {});
         } catch (err) {
