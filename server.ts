@@ -30,6 +30,7 @@ app.use('/api/bookmark', BookmarkRoute);
 
 app.use('/static', express.static(config.fileDir.default));
 app.use('/', express.static(config.viewsDir));
+app.use('*', (req, res) => res.redirect("http://recipeapp.saintdev.kr/"));
 
 app.listen(config.port, (): void => {
     console.log(`Listening at http://localhost:${config.port}/`);

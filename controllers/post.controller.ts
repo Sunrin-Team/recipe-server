@@ -106,7 +106,7 @@ export class PostController extends Controller {
 
         let file = (req as any).file;
         if (!file)
-            file = null;
+            file = {filename:null};
 
         let { filename } = file;
 
@@ -124,7 +124,7 @@ export class PostController extends Controller {
         console.log(postId,"asdf");
         let file = (req as any).file;
         if (!file)
-            file = null;
+            file = {filename:null};
 
         let { filename } = file;
 
