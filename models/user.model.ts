@@ -4,32 +4,34 @@ import config from '../db-config';
 const env = process.env.NODE_ENV || 'development';
 const sequelize = new Sequelize(config[env].database, config[env].username, config[env].password, config[env]);
 
-class UserModel extends Model {}
+class PostModel extends Model {}
 
-UserModel.init({
-    id: {
-        type: DataTypes.INTEGER,
+PostModel.init({
+    id:{
+        type: DataTypes.INTEGER(),
         primaryKey: true,
         autoIncrement: true
     },
-    email:{
-        type: DataTypes.STRING(40),
+    image:{
+        type: DataTypes.STRING(1000),
         allowNull: false,
-        unique: true,
     },
-    nickname:{
-        type: DataTypes.STRING(15),
-        allowNull: false,
-        unique: true
-    },
-    password:{
+    title:{
         type: DataTypes.STRING(100),
+        allowNull: false,
+    },
+    subTitle:{
+        type: DataTypes.STRING(100),
+        allowNull: false,
+    },
+    writer:{
+        type: DataTypes.STRING(40),
         allowNull: false,
     }
 }, {
     sequelize,
-    modelName: "user",
+    modelName: "post",
     timestamps: false
 });
 
-export default UserModel
+export default PostModel

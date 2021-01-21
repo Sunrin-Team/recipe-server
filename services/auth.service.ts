@@ -42,19 +42,3 @@ export class AuthService {
         });
     }
 }
-
-/*
-            UserModel.findOne({username: crypto.encrypt(username)}, (err: object, res: UserModelT): void => {
-                if (err) {
-                    reject(err);
-                } else if (res == null) {
-                    new UserModel({username: crypto.encrypt(username), password: crypto.encrypt(password)}).save((err: object): void => {
-                        if (err)
-                            reject(err);
-                        else
-                            resolve();
-                    })
-                } else {
-                    reject("the user already exist.");
-                }
-            }); */
